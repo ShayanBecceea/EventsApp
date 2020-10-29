@@ -1,0 +1,42 @@
+.row{
+  height: 65px;
+  background-color: rgb(209, 201, 201);
+}
+
+.logo{
+  position: relative;
+  top: -5px;
+  outline: none;
+  cursor: pointer;
+
+}
+
+.right_icon {
+  flex: 1 1 auto;
+}
+
+.icon{
+  position: relative;
+  top: 8px;
+}
+
+.avatar {
+  position: absolute;
+  top: 16px;
+  right: 110px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+@media screen and (min-width: 320px) and (max-width:480px) {
+  .logo{
+    position: relative;
+    left: -20px;
+    top: -10px;
+    width: 100px;
+  }
+
+}
+

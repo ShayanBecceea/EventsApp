@@ -1,0 +1,54 @@
+<div class="container">
+  <div class="eventlist">
+     <div *ngFor="let event of eventList">
+        <a [class.selected]="eventId==event.eventId" (click)="eventClick(event.eventId)">
+        <mat-card>
+           <div class = "user"><img src = {{event.image}}/></div>
+           <mat-card-title>{{event.Title}}</mat-card-title>
+           <mat-card-subtitle>{{event.Category}}</mat-card-subtitle>
+           <mat-card-content>{{event.Location}}</mat-card-content>
+           <div class="date">{{event.StartTime}}</div>
+        </mat-card>
+        </a>
+     </div>
+  </div>
+  <div class="eventlist">
+     <div *ngFor="let event of eventSelected">
+        <mat-card>
+            <mat-card-title>
+              <h2>{{event.Title}}</h2>
+            </mat-card-title>
+            <mat-card-content><h3>Location: </h3> {{event.Location}}</mat-card-content>
+            <mat-card-content><h3>Category: </h3> {{event.Category}}</mat-card-content>
+            <mat-card-content><h3>Subcategory: </h3> {{event.Subcategory}}</mat-card-content>
+            <mat-card-content><h3>Frequency: </h3> {{event.Frequency}}</mat-card-content>
+            <mat-card-content><h3>Starting Date: </h3> {{event.Starts}}</mat-card-content>
+            <mat-card-content><h3>Start Time: </h3> {{event.StartTime}}</mat-card-content>
+            <mat-card-content><h3>End Time: </h3> {{event.EndTime}}</mat-card-content>
+            <mat-card-content><h3>Info: </h3> {{event.About}}</mat-card-content>
+            <mat-card-content><h3>Access: </h3> {{event.Access}}</mat-card-content>
+            <mat-card-content class = "gallery">
+              <img src={{event.Picture}} class="event">
+            </mat-card-content>
+            <mat-card-content>
+              <table>
+                <tr>
+                  <th><h3>Ticket</h3></th>
+                  <th><h3>Price</h3>
+                  </th><th><h3>Currency</h3></th>
+                </tr>
+                <tr *ngFor="let priceCate of event.priceCategories">
+                  <td>{{priceCate.Name}}</td>
+                  <td>{{priceCate.price}}</td>
+                  <td>{{priceCate.currency}}</td>
+                </tr>
+              </table>
+            </mat-card-content>
+            <mat-card-content><h3>Restriction: </h3> {{event.AudienceRestrictions}}</mat-card-content>
+            <mat-card-content><h3> Guests: </h3> {{event.Guests}}</mat-card-content>
+            <mat-card-content><h3>Special guests:</h3> {{event.GuestsNames}}</mat-card-content>
+            <mat-card-content><h3>Authorities:</h3> {{event.Authority}}</mat-card-content>
+            </mat-card>
+     </div>
+  </div>
+</div>

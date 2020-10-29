@@ -1,0 +1,383 @@
+<mat-horizontal-stepper [linear]="false" #stepper>
+  <!-- FIRST FORM -->
+  <mat-step [stepControl]="firstFormGroup">
+     <form [formGroup]="firstFormGroup">
+        <ng-template matStepLabel>General Information</ng-template>
+        <!-- category of event -->
+        <mat-card class="card_1">
+           <mat-card-title>Choose category of event</mat-card-title>
+           <div class="error" *ngIf="categorySelected == null">
+            <mat-icon>error</mat-icon>
+          </div>
+           <div class = "category">
+              <div class="card" *ngFor='let category of EventCategories'>
+                 <button mat-icon-button class="category_icon" [class.selected]="categorySelected==category.category" (click)="chooseCategory(category.category)">
+                  <mat-icon>{{category.icon}}</mat-icon>
+                 </button>
+                 <p class ="description">{{category.category}}</p>
+              </div>
+           </div>
+           <!-- subcategory of event -->
+           <div *ngIf= "SubCategories !=null">
+              <mat-card-title>Select Subcategory</mat-card-title>
+              <div class="error" *ngIf="SubCategorySelected == null">
+                <mat-icon>error</mat-icon>
+              </div>
+              <div class = "subcategory" *ngFor='let sub of SubCategories'>
+                 <mat-chip-list>
+                    <div class="card" *ngFor="let subcategory of sub.subCategory" >
+                      <mat-chip class="category_selected" [class.selected]="SubCategorySelected==subcategory" (click)="chooseSubCategory(subcategory)">{{ subcategory }}</mat-chip>
+                    </div>
+                 </mat-chip-list>
+              </div>
+            </div>
+        </mat-card>
+        <!-- type of event -->
+        <mat-card class="card_2">
+           <mat-card-title>Choose type of event</mat-card-title>
+           <div class="error" *ngIf="firstform.typecontrol.value == ''">
+            <mat-icon>error</mat-icon>
+          </div>
+           <mat-button-toggle-group formControlName="typecontrol">
+              <mat-button-toggle class="eventType" value="Private" (click)="EventChosen('Private')" [class.selected]="firstform.typecontrol.value=='Private'">Private</mat-button-toggle>
+              <mat-button-toggle class="eventType" value="Public" (click)="EventChosen('Public')"  [class.selected]="firstform.typecontrol.value=='Public'">Public</mat-button-toggle>
+           </mat-button-toggle-group>
+        </mat-card>
+        <!-- event frequency -->
+        <mat-card class="card_3">
+           <mat-card-title>Choose Event Frequency</mat-card-title>
+           <mat-form-field appearance="outline">
+              <mat-label>Event frequency</mat-label>
+              <mat-select formControlName="frequencycontrol" required>
+                 <mat-option (onSelectionChange)="eventfrequency($event)" *ngFor="let result of frequency" [value]="result.value">
+                 {{result.viewValue}}
+                 </mat-option>
+              </mat-select>
+           </mat-form-field>
+           <div *ngIf= "frequencyFilter !=null">
+              <div *ngFor='let result of frequencyFilter'>
+                 <mat-form-field appearance="outline">
+                    <mat-label>Occurance</mat-label>
+                    <mat-select formControlName="occurancecontrol" required >
+                       <mat-option (onSelectionChange)="periodfrequency($event)" *ngFor="let result of result.occurance" [value]="result">
+                       {{result}}
+                       </mat-option>
+                    </mat-select>
+                 </mat-form-field>
+              </div>
+           </div>
+        </mat-card>
+        <!-- event date -->
+        <mat-card class="card_4">
+           <mat-card-title>Choose Event Date</mat-card-title>
+           <div class = "cardContainerDate">
+              <mat-form-field appearance="outline">
+
+                <mat-label>Starts</mat-label>
+              <input matInput [matDatepicker]="picker1" [min]="minDate" (dateChange)="startDate($event)" formControlName="datecontrol">
+              <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+              <mat-datepicker #picker1></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Ends By</mat-label>
+            <input matInput [matDatepicker]="picker2" [min]="minDate" (dateChange)="endDate($event)" formControlName="datecontrol">
+            <mat-datepicker-toggle  matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
+
+              </mat-form-field>
+           </div>
+           <!-- event time -->
+           <mat-card-title>Choose Event Time</mat-card-title>
+           <div class = "cardContainerTime">
+              <mat-form-field appearance="outline">
+                 <mat-label>Starting Time</mat-label>
+                 <input matInput #startTime type="time" (change)="startingTime(startTime.value)" formControlName="timecontrol">
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                 <mat-label>Ending Time</mat-label>
+                 <input matInput #endTime type="time" (change)="EndingTime(endTime.value)" formControlName="timecontrol">
+              </mat-form-field>
+           </div>
+        </mat-card>
+        <!-- event title -->
+        <mat-card class="card_5">
+           <div class = "container_1">
+              <mat-card-title>Choose Event Title</mat-card-title>
+              <mat-form-field appearance="outline">
+                 <mat-label>Event Title</mat-label>
+                 <input matInput formControlName="titlecontrol">
+              </mat-form-field>
+           </div>
+           <!-- event information -->
+           <div class = "container_2">
+              <mat-card-title>Info About Event</mat-card-title>
+              <mat-form-field appearance="outline">
+                 <mat-label>About Event</mat-label>
+                 <textarea matInput formControlName="informationcontrol"></textarea>
+              </mat-form-field>
+           </div>
+        </mat-card>
+        <!-- event image -->
+        <mat-card class="card_6">
+           <mat-card-title>Event's Picture</mat-card-title>
+           <input #Image type="file" (change)="onSelectFile($event)" multiple formControlName="imagecontrol"/>
+           <img *ngFor='let url of urls' [src]="url" class="image">
+           <mat-icon>add_photo_alternate</mat-icon>
+        </mat-card>
+
+        <button mat-button class="proceed" (click)="Page1Proceed(stepper)">Proceed</button>
+     </form>
+  </mat-step>
+
+
+  <!-- SECOND FORM -->
+  <mat-step [stepControl]="secondFormGroup">
+    <form [formGroup]="secondFormGroup">
+      <ng-template matStepLabel>Pricing and Location</ng-template>
+      <!-- location -->
+      <mat-card class="card_7">
+        <mat-card-title>Chooose location</mat-card-title>
+          <mat-form-field appearance="outline">
+            <mat-label>Location</mat-label>
+            <mat-select formControlName="locationcontrol">
+              <mat-option (onSelectionChange)="chooseLocation($event)" *ngFor="let location of cities" [value]="location.name">
+                {{location.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <!-- venue -->
+          <mat-form-field appearance="outline" *ngFor='let city of cityvenues'>
+            <mat-label>Venue</mat-label>
+            <mat-select formControlName="venuecontrol">
+              <mat-option (onSelectionChange)="chooseVenue($event)" *ngFor="let venue of city.venues" [value]="venue">
+                {{venue}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class = "container">
+          <div>Type full address</div>
+          <mat-form-field appearance="outline">
+            <mat-label>Address</mat-label>
+            <input matInput placeholder="Full address" formControlName="addresscontrol" required>
+          </mat-form-field>
+          </div>
+      </mat-card>
+
+      <!-- Pricing -->
+      <mat-card class="card_8">
+        <mat-card-title>Choose Price</mat-card-title>
+        <mat-button-toggle-group formControlName="pricecontrol">
+          <mat-button-toggle class="pricing" (click)="ChoosePrice()" value="Free" [class.selected]="secondform.pricecontrol.value=='Free'">Free</mat-button-toggle>
+          <mat-button-toggle class="pricing" (click)="ChoosePrice()"  value="Paid" [class.selected]="secondform.pricecontrol.value=='Paid'">Paid</mat-button-toggle>
+        </mat-button-toggle-group>
+        <div *ngIf="secondform.pricecontrol.value=='Paid'">
+          <div>Different pricing</div>
+          <div class = "price_adjustment">
+            <button mat-button  (click)="UpdatePrice('-')">
+              <mat-icon>remove</mat-icon>
+            </button>
+            <input matInput class="display" readonly [value]="prices">
+            <button mat-button (click)="UpdatePrice('+')">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+          <div *ngIf="ticketnameerror == true"></div>
+          <table>
+            <tr>
+              <th>Ticket Name</th>
+              <th>Price</th>
+              <th>Currency</th>
+            </tr>
+            <tr *ngFor="let items of priceinformation" >
+              <td>
+                <mat-form-field appearance="outline" >
+                  <mat-label>Name</mat-label>
+                  <input matInput [(value)]="items.ticketName" (change)="getTicketName($event, items)" required>
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field appearance="outline" >
+                  <mat-label>Rs</mat-label>
+                  <input matInput [(value)]="items.price" (change)="getPrice($event, items)" required>
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field appearance="fill" style="text-align: center;" >
+                  <mat-label>MUR</mat-label>
+                  <input matInput readonly placeholder="MUR">
+                </mat-form-field>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </mat-card>
+
+      <div>
+        <button mat-button class="proceed" matStepperPrevious>Back</button>
+        <button mat-button class="proceed" (click)="Page2Proceed(stepper)">Proceed</button>
+      </div>
+
+    </form>
+  </mat-step>
+
+  <mat-step [stepControl]="thirdFormGroup">
+    <form [formGroup]="thirdFormGroup">
+      <ng-template matStepLabel>Additional Information</ng-template>
+
+      <!-- Restrictions -->
+      <mat-card class="card_9">
+        <mat-card-title>Choose Restrictions</mat-card-title>
+        <div class="error">{{restrictionselected}}</div>
+        <mat-radio-group formControlName="radiobuttoncontrol" required>
+          <div class = "container">
+            <div class="radio_button" *ngFor='let restriction of EventRestrictions'>
+              <mat-radio-button [value]="restriction" (change)="changeRestrictions($event)" color="primary">
+               {{restriction}}
+              </mat-radio-button>
+            </div>
+          </div>
+        </mat-radio-group>
+      </mat-card>
+
+      <!--Guests -->
+      <mat-card class="card_10">
+        <mat-card-title>Choose number of guests</mat-card-title>
+        <div *ngIf="guestserror == true"></div>
+        <div class = "container">
+          <button mat-button (click)="UpdateGuests('-')">
+            <mat-icon>remove</mat-icon>
+          </button>
+          <input matInput class="display" [value]="guests" readonly required>
+          <button mat-button (click)="UpdateGuests('+')">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </mat-card>
+
+      <!-- Special guests -->
+      <mat-card class="card_11">
+        <mat-card-title>Choose special guests</mat-card-title>
+        <div class = "container">
+          <button mat-button (click)="UpdateSpecialGuests('-')">
+            <mat-icon>remove</mat-icon>
+          </button>
+          <input matInput class="display" readonly [value]="specialguestsnumber">
+          <button mat-button (click)="UpdateSpecialGuests('+')">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+          <div>Name of special guests</div>
+          <div *ngIf="specialguestserror == true"></div>
+          <div *ngFor="let guests of SpecialGuests">
+            <mat-form-field appearance="outline">
+              <mat-label>Special guests</mat-label>
+              <input matInput  [(value)]="guests.name" (blur)="SpecialGuestsDetails($event, guests)" required>
+            </mat-form-field>
+          </div>
+
+          <!-- Guest image -->
+          <div class="guestsimage">
+            <mat-card-title>Guests Pictures</mat-card-title>
+              <input #Image type="file" (change)="GuestsImage($event)" multiple/>
+              <img *ngFor='let url of guesturl' [src]="url" class="image">
+            <mat-icon>add_photo_alternate</mat-icon>
+          </div>
+
+
+         <!-- Additional information -->
+        <div class = "additionalinfo">
+          <mat-card-title>Provide additional information</mat-card-title>
+        <mat-form-field appearance="outline">
+          <mat-label>Additional info</mat-label>
+          <input formControlName="additionalinfocontrol" matInput required>
+        </mat-form-field>
+        </div>
+      </mat-card>
+
+      <!-- Authorities -->
+      <mat-card class="card_12">
+        <mat-card-title>Choose Authorities</mat-card-title>
+        <mat-button-toggle-group formControlName="authoritycontrol" required>
+          <mat-button-toggle class="authority" (click)="selectAuthority()" value="Yes" [class.selected]="thirdform.authoritycontrol.value=='Yes'">Yes</mat-button-toggle>
+          <mat-button-toggle class="authority" (click)="selectAuthority()"  value="No" [class.selected]="thirdform.authoritycontrol.value=='No'">No</mat-button-toggle>
+        </mat-button-toggle-group>
+        <div class="error">{{authorityselected}}</div>
+        <div *ngIf="thirdform.authoritycontrol.value=='Yes'"><br>
+          <div *ngIf="authorityerror == true"></div>
+          <mat-radio-group required>
+            <div class = "container">
+              <div class="radiobutton" *ngFor='let authority of authorities'>
+                <mat-radio-button [value]="authority" (change)="changeAuthority($event)" color="primary">
+                  {{authority}}
+                </mat-radio-button>
+              </div>
+            </div>
+          </mat-radio-group>
+        </div>
+      </mat-card>
+
+       <div>
+        <button mat-button class="proceed" matStepperPrevious>Back</button>
+        <button mat-button class="proceed" (click)="Page3Proceed(stepper)">Proceed</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <!-- summary of event -->
+  <mat-step>
+    <ng-template matStepLabel>Summary</ng-template>
+    <mat-card class="card_13">
+      <mat-card-title>Summary of event</mat-card-title>
+      <mat-card-content><h2>{{firstform.titlecontrol.value}}</h2></mat-card-content>
+      <mat-card-content><h3>Category of event: </h3> {{categorySelected}}</mat-card-content>
+      <mat-card-content><h3>Subcategory of event: </h3> {{SubCategorySelected}} </mat-card-content>
+      <mat-card-content><h3>Type of event: </h3> {{firstform.typecontrol.value}}</mat-card-content>
+      <mat-card-content><h3>Frequency: </h3> {{frequencySelected}} &nbsp; <h3>Every: </h3> {{occuranceSelected}}</mat-card-content>
+      <mat-card-content><h3>Starting date: </h3> {{StartDate | date:'mediumDate'}} &nbsp; <h3>Ending date: </h3> {{EndDate | date :'mediumDate'}}</mat-card-content>
+      <mat-card-content><h3>Start and End time: </h3> {{startTime.value }} - {{endTime.value }}</mat-card-content>
+      <mat-card-content><h3>Info: </h3> {{firstform.informationcontrol.value}}</mat-card-content>
+      <mat-card-content><h3>Event's images: </h3><img *ngFor="let url of urls" [src]="url"></mat-card-content>
+      <mat-card-content><h3>Location: </h3> {{locationselected}} &nbsp; <h3>Venue: </h3> {{venueselected}}</mat-card-content>
+      <mat-card-content><h3>Address: </h3> {{secondform.addresscontrol.value}}</mat-card-content>
+      <mat-card-content><h3>Price: </h3> {{secondform.pricecontrol.value}}</mat-card-content>
+      <mat-card-content *ngIf="secondform.pricecontrol.value == 'Paid'">
+        <table>
+          <tr>
+            <th>Ticket Name</th>
+            <th>Price</th>
+            <th>Currency</th>
+          </tr>
+          <tr *ngFor="let items of priceinformation">
+            <td>{{items.ticketName}}</td>
+            <td>{{items.price}}</td>
+            <td>MUR</td>
+          </tr>
+        </table>
+      </mat-card-content>
+      <mat-card-content><h3>Restrictions: </h3> {{thirdform.radiobuttoncontrol.value}}</mat-card-content>
+      <mat-card-content><h3>Guests expected: </h3> {{guests}}</mat-card-content>
+      <mat-card-content><h3>Special guests: </h3> {{specialguestsnumber}}</mat-card-content>
+      <mat-card-content *ngIf="specialguestsnumber >= 1">
+        <table class="guests">
+            <h3>Guests Name</h3>
+          <tr *ngFor="let guest of SpecialGuests">
+            <td>{{guest.name}}</td>
+          </tr>
+        </table>
+      </mat-card-content>
+      <mat-card-content><h3>Guests pictures: </h3> <img *ngFor="let url of guesturl" [src]="url"></mat-card-content>
+      <mat-card-content><h3>Additional information: </h3> {{thirdform.additionalinfocontrol.value}}</mat-card-content>
+      <mat-card-content *ngIf="thirdform.authoritycontrol.value == 'Yes'">
+        <h3>Authority: </h3> {{authorityselected}}
+      </mat-card-content>
+    </mat-card>
+
+    <div>
+      <button mat-button class="proceed" matStepperPrevious>Back</button>
+      <button mat-button class="proceed" (click)="Page3Proceed(stepper)">Create Event</button>
+    </div>
+
+  </mat-step>
+
+
+</mat-horizontal-stepper>
